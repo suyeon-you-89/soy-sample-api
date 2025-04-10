@@ -1,0 +1,16 @@
+import "../base"
+
+model code extends AuditRecordDate {
+
+    id  Int  @id @default(autoincrement())
+    code_type String @db.VarChar
+    code String @db.VarChar
+    code_translation String @db.VarChar
+    code_nation String @db.VarChar
+    order Int? @db.Integer
+
+    @@unique([code_type, code, code_nation])
+
+    @@schema("account") 
+    @@allow('all', true)
+}

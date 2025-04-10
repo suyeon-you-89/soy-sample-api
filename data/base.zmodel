@@ -1,0 +1,13 @@
+
+abstract model AuditRecordDate {
+    created_dt DateTime  @default(now()) @db.Timestamptz(6)
+    deleted_dt DateTime? @db.Timestamptz(6)
+    updated_dt DateTime? @default(now()) @db.Timestamptz(6) 
+}
+
+
+abstract model AuditRecordUser {
+    created_by String   @db.VarChar
+    updated_by String?  @db.VarChar
+    deleted_by String?  @db.VarChar 
+}
