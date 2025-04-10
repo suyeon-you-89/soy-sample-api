@@ -11,7 +11,7 @@ export class CodeController {
   constructor(private readonly codeService: CodeService) {}
 
   @Post()
-  @ApiOperation({ summary: '사용자 생성' })
+  @ApiOperation({ summary: '코드 생성' })
   @ApiResponse({ status: 201, description: '성공적으로 생성됨', type: CodeEntity })
   create(@Body() createCodeDto: CreateCodeDto) {
     return this.codeService.create(createCodeDto);

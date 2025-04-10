@@ -1,6 +1,6 @@
 import "../base"
 
-model code extends AuditRecordDate {
+model Code extends AuditRecordDate {
 
     id  Int  @id @default(autoincrement())
     code_type String @db.VarChar
@@ -13,4 +13,107 @@ model code extends AuditRecordDate {
 
     @@schema("account") 
     @@allow('all', true)
+    @@map("code")
+}
+
+model Member extends AuditRecord {
+    id String @id @db.VarChar
+    name String @db.VarChar 
+
+    bank_account BankAccount[]
+    credit_card CreditCard[]
+    budget Budget[]
+    income Income[]
+    expense Expense[]
+   
+    @@schema("account") 
+    @@allow('all', true)
+    @@map("member")
+}
+
+model BankAccount extends AuditRecord {
+    id Int @id @default(autoincrement())
+    owner_id String @db.VarChar
+    owner Member  @relation(fields: [owner_id], references: [id])
+    bank String @db.VarChar
+    account_number Int @db.Integer
+    alias String? @db.VarChar
+    
+    credit_cards CreditCard[]  
+    budget Budget[] 
+
+    @@unique([owner, account_number])
+    @@schema("account") 
+    @@allow('all', true)
+    @@map("bank_account")
+}
+
+model CreditCard extends AuditRecord {
+    id Int @id @default(autoincrement())
+    owner_id String @db.VarChar
+    owner Member  @relation(fields: [owner_id], references: [id])
+    name String @db.VarChar
+    pay_bank_account_id Int
+    pay_bank_account BankAccount @relation(fields: [pay_bank_account_id], references: [id]) 
+    memo String? @db.VarChar
+    
+    budget Budget[] 
+
+    @@unique([owner, name])
+    @@schema("account") 
+    @@allow('all', true)
+    @@map("credit_card")
+} 
+
+model Budget extends AuditRecord { 
+    id Int @id @default(autoincrement()) 
+    type String @db.VarChar // in or out 
+    category String @db.VarChar // out_category or in_category 
+    out_type String? @db.VarChar // incase type equls out 
+
+    owner_id String @db.VarChar
+    owner Member  @relation(fields: [owner_id], references: [id])
+    
+    amount BigInt @db.BigInt
+    currency String @db.VarChar @default("KRW")
+
+    credit_card_id Int
+    credit_card CreditCard? @relation(fields:[credit_card_id], references: [id])
+    
+    bank_account_id Int
+    bank_account BankAccount? @relation(fields: [bank_account_id], references: [id])
+
+    num_of_month Int 
+    start_month String @db.VarChar
+    end_month String @db.VarChar
+    
+    memo String @db.Text
+
+    @@schema("account") 
+    @@allow('all', true)
+    @@map("budget")
+}
+
+
+model Income extends AuditRecord {    
+    id Int @id @default(autoincrement())
+    owner_id String @db.VarChar
+    owner Member  @relation(fields: [owner_id], references: [id])
+    amount BigInt @db.BigInt
+    currency String @db.VarChar @default("KRW")
+    
+    @@schema("account") 
+    @@allow('all', true)
+    @@map("income")
+}
+
+model Expense extends AuditRecord {
+    id Int @id @default(autoincrement()) 
+    owner_id String @db.VarChar
+    owner Member  @relation(fields: [owner_id], references: [id])
+    type String @db.VarChar// credit or transfer 
+    memo String @db.Text
+    @@schema("account") 
+    @@allow('all', true)
+    @@map("expense")
 }
