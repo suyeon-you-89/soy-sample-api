@@ -1,0 +1,25 @@
+services:
+  soy-rdb:
+    image: postgres
+    container_name: soy-rdb
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ${VOLUME_ROOT}/soy-rdb:/var/lib/postgresql/data # 볼륨이미지
+    networks:
+      - default
+    restart: always
+
+volumes: 
+  soy-rdb: # Postgres Volume
+  soy-api:
+
+networks:
+  default:
+    driver: bridge
+  dmz:
+    external: true
