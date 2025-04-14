@@ -17,7 +17,7 @@ model Code extends AuditRecordDate {
 }
 
 model Member extends AuditRecord {
-    id String @id @db.VarChar
+    id String @id @db.VarChar @unique
     name String @db.VarChar 
 
     bank_account BankAccount[]
@@ -42,7 +42,7 @@ model BankAccount extends AuditRecord {
     credit_cards CreditCard[]  
     budget Budget[] 
 
-    @@unique([owner, account_number])
+    @@unique([account_number])
     @@schema("account") 
     @@allow('all', true)
     @@map("bank_account")
@@ -59,7 +59,7 @@ model CreditCard extends AuditRecord {
     
     budget Budget[] 
 
-    @@unique([owner, name])
+    @@unique([owner_id, name])
     @@schema("account") 
     @@allow('all', true)
     @@map("credit_card")
@@ -113,6 +113,7 @@ model Expense extends AuditRecord {
     owner Member  @relation(fields: [owner_id], references: [id])
     type String @db.VarChar// credit or transfer 
     memo String @db.Text
+    
     @@schema("account") 
     @@allow('all', true)
     @@map("expense")

@@ -15,10 +15,10 @@ generator client {
   previewFeatures = ["multiSchema", "prismaSchemaFolder", "relationJoins"]
 }
 
-model code {
-  created_dt       DateTime  @default(now()) @db.Timestamptz(6)
-  deleted_dt       DateTime? @db.Timestamptz(6)
-  updated_dt       DateTime? @default(now()) @db.Timestamptz(6)
+model Code {
+  created_dt       DateTime  @default(now()) @db.Timestamp(6)
+  deleted_dt       DateTime? @db.Timestamp(6)
+  updated_dt       DateTime? @default(now()) @db.Timestamp(6)
   id               Int       @id() @default(autoincrement())
   code_type        String    @db.VarChar()
   code             String    @db.VarChar()
@@ -27,5 +27,129 @@ model code {
   order            Int?      @db.Integer()
 
   @@unique([code_type, code, code_nation])
+  @@map("code")
+  @@schema("account")
+}
+
+model Member {
+  created_dt   DateTime      @default(now()) @db.Timestamp(6)
+  deleted_dt   DateTime?     @db.Timestamp(6)
+  updated_dt   DateTime?     @default(now()) @db.Timestamp(6)
+  created_by   String        @db.VarChar()
+  updated_by   String?       @db.VarChar()
+  deleted_by   String?       @db.VarChar()
+  id           String        @id() @unique() @db.VarChar()
+  name         String        @db.VarChar()
+  bank_account BankAccount[]
+  credit_card  CreditCard[]
+  budget       Budget[]
+  income       Income[]
+  expense      Expense[]
+
+  @@map("member")
+  @@schema("account")
+}
+
+model BankAccount {
+  created_dt     DateTime     @default(now()) @db.Timestamp(6)
+  deleted_dt     DateTime?    @db.Timestamp(6)
+  updated_dt     DateTime?    @default(now()) @db.Timestamp(6)
+  created_by     String       @db.VarChar()
+  updated_by     String?      @db.VarChar()
+  deleted_by     String?      @db.VarChar()
+  id             Int          @id() @default(autoincrement())
+  owner_id       String       @db.VarChar()
+  owner          Member       @relation(fields: [owner_id], references: [id])
+  bank           String       @db.VarChar()
+  account_number Int          @db.Integer()
+  alias          String?      @db.VarChar()
+  credit_cards   CreditCard[]
+  budget         Budget[]
+
+  @@unique([account_number])
+  @@map("bank_account")
+  @@schema("account")
+}
+
+model CreditCard {
+  created_dt          DateTime    @default(now()) @db.Timestamp(6)
+  deleted_dt          DateTime?   @db.Timestamp(6)
+  updated_dt          DateTime?   @default(now()) @db.Timestamp(6)
+  created_by          String      @db.VarChar()
+  updated_by          String?     @db.VarChar()
+  deleted_by          String?     @db.VarChar()
+  id                  Int         @id() @default(autoincrement())
+  owner_id            String      @db.VarChar()
+  owner               Member      @relation(fields: [owner_id], references: [id])
+  name                String      @db.VarChar()
+  pay_bank_account_id Int
+  pay_bank_account    BankAccount @relation(fields: [pay_bank_account_id], references: [id])
+  memo                String?     @db.VarChar()
+  budget              Budget[]
+
+  @@unique([owner_id, name])
+  @@map("credit_card")
+  @@schema("account")
+}
+
+model Budget {
+  created_dt      DateTime     @default(now()) @db.Timestamp(6)
+  deleted_dt      DateTime?    @db.Timestamp(6)
+  updated_dt      DateTime?    @default(now()) @db.Timestamp(6)
+  created_by      String       @db.VarChar()
+  updated_by      String?      @db.VarChar()
+  deleted_by      String?      @db.VarChar()
+  id              Int          @id() @default(autoincrement())
+  type            String       @db.VarChar()
+  category        String       @db.VarChar()
+  out_type        String?      @db.VarChar()
+  owner_id        String       @db.VarChar()
+  owner           Member       @relation(fields: [owner_id], references: [id])
+  amount          BigInt       @db.BigInt()
+  currency        String       @default("KRW") @db.VarChar()
+  credit_card_id  Int
+  credit_card     CreditCard?  @relation(fields: [credit_card_id], references: [id])
+  bank_account_id Int
+  bank_account    BankAccount? @relation(fields: [bank_account_id], references: [id])
+  num_of_month    Int
+  start_month     String       @db.VarChar()
+  end_month       String       @db.VarChar()
+  memo            String       @db.Text()
+
+  @@map("budget")
+  @@schema("account")
+}
+
+model Income {
+  created_dt DateTime  @default(now()) @db.Timestamp(6)
+  deleted_dt DateTime? @db.Timestamp(6)
+  updated_dt DateTime? @default(now()) @db.Timestamp(6)
+  created_by String    @db.VarChar()
+  updated_by String?   @db.VarChar()
+  deleted_by String?   @db.VarChar()
+  id         Int       @id() @default(autoincrement())
+  owner_id   String    @db.VarChar()
+  owner      Member    @relation(fields: [owner_id], references: [id])
+  amount     BigInt    @db.BigInt()
+  currency   String    @default("KRW") @db.VarChar()
+
+  @@map("income")
+  @@schema("account")
+}
+
+model Expense {
+  created_dt DateTime  @default(now()) @db.Timestamp(6)
+  deleted_dt DateTime? @db.Timestamp(6)
+  updated_dt DateTime? @default(now()) @db.Timestamp(6)
+  created_by String    @db.VarChar()
+  updated_by String?   @db.VarChar()
+  deleted_by String?   @db.VarChar()
+  id         Int       @id() @default(autoincrement())
+  owner_id   String    @db.VarChar()
+  owner      Member    @relation(fields: [owner_id], references: [id])
+  type       String    @db.VarChar()
+  memo       String    @db.Text()
+
+  @@map("expense")
   @@schema("account")
 }

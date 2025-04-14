@@ -1,8 +1,8 @@
 
 abstract model AuditRecordDate {
-    created_dt DateTime  @default(now()) @db.DateTime(6)
-    deleted_dt DateTime? @db.DateTime(6)
-    updated_dt DateTime? @default(now()) @db.DateTime(6) 
+    created_dt DateTime  @default(now()) @db.Timestamp(6)
+    deleted_dt DateTime? @db.Timestamp(6)
+    updated_dt DateTime? @default(now()) @db.Timestamp(6) 
 }
 
 
@@ -13,9 +13,9 @@ abstract model AuditRecordUser {
 }
 
 abstract model AuditRecord {
-    created_dt DateTime  @default(now()) @db.DateTime(6)
-    deleted_dt DateTime? @db.DateTime(6)
-    updated_dt DateTime? @default(now()) @db.DateTime(6) 
+    created_dt DateTime  @default(now()) @db.Timestamp(6)
+    deleted_dt DateTime? @db.Timestamp(6)
+    updated_dt DateTime? @default(now()) @db.Timestamp(6) 
     created_by String   @db.VarChar
     updated_by String?  @db.VarChar
     deleted_by String?  @db.VarChar 

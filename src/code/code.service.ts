@@ -6,19 +6,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CodeService {
-  constructor(private prisma: PrismaService) {}
-
-  // create(data: CreateUserDto) {
-  //   return this.prisma.user.create({ data });
-  // }
-
-  // findAll() {
-  //   return this.prisma.user.findMany();
-  // }
-
-  // findOne(id: number) {
-  //   return this.prisma.user.findUnique({ where: { id } });
-  // }
+  constructor(private prisma: PrismaService) {} 
   create(data: CreateCodeDto) {
     const { code, code_type, code_translation, code_nation, order } = data
     return this.prisma.code.create( {
@@ -47,7 +35,7 @@ export class CodeService {
 
   update(id: number, updateCodeDto: UpdateCodeDto) {
     const { code_type, code_nation, code, code_translation, order} =  updateCodeDto; 
-    const where: Prisma.codeWhereUniqueInput = {
+    const where: Prisma.CodeWhereUniqueInput = {
       id
     }
     return this.prisma.code.update({
